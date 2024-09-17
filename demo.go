@@ -15,12 +15,13 @@ import (
 
 	"github.com/http-wasm/http-wasm-guest-tinygo/handler"
 	"github.com/http-wasm/http-wasm-guest-tinygo/handler/api"
-	"github.com/juliens/wasm-goexport/guest"
 	_ "github.com/stealthrocket/net/http"
 	"github.com/stealthrocket/net/wasip1"
 )
 
-func main() {
+func main() {}
+
+func init() {
 	// Because there is no file mounted in the plugin by default, we configure insecureSkipVerify to avoid having to load rootCas
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec
 
@@ -49,7 +50,6 @@ func main() {
 		os.Exit(1)
 	}
 	handler.HandleRequestFn = mw.handleRequest
-	guest.SetExports(handler.GetExports())
 }
 
 // Config the plugin configuration.

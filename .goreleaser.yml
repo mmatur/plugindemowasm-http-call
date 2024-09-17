@@ -2,16 +2,15 @@ project_name: plugindemowasm-http-call
 version: 2
 
 builds:
-  - binary: plugin.wasm
-    gobinary: go
+  - binary: plugin
     no_unique_dist_dir: true
     main: .
     ldflags:
       - ''
-    goos:
-      - wasip1
-    goarch:
-      - wasm
+    targets:
+      - wasip1_wasm
+    buildmode: c-shared
+    gobinary: ./gopath/bin/gotip
 
 changelog:
   sort: asc

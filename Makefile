@@ -1,15 +1,21 @@
 .PHONY: test checks build
 
-export GOOS=wasip1
-export GOARCH=wasm
+default: test checks build gotip
 
-default: test checks build
+gopath:
+	mkdir $(CURDIR)/gopath
 
-test:
-	go test -v -cover ./...
+gopath/bin/gotip: gopath
+	GOPATH=$(CURDIR)/gopath go install golang.org/dl/gotip@latest
 
-build:
-	@go build -o plugin.wasm ./demo.go
+gotip: gopath/bin/gotip
+	$(CURDIR)/gopath/bin/gotip download
+
+test: gotip
+	GOOS=wasip1 GOARCH=wasm $(CURDIR)/gopath/bin/gotip test -v -cover ./...
+
+build: gotip
+	GOOS=wasip1 GOARCH=wasm CGO_ENABLED=0 $(CURDIR)/gopath/bin/gotip build -buildmode=c-shared -trimpath -o plugin.wasm ./demo.go
 
 checks:
-	golangci-lint run
+	GOOS=wasip1 GOARCH=wasm golangci-lint run
